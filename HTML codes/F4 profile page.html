@@ -1,0 +1,252 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #A90003;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            position: relative;
+        }
+
+        .settings-dropdown {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+        }
+
+        .settings-button {
+            background-color: white;
+            border: 2px solid #2980b9; /* Blue border */
+            color: #2980b9; /* Blue text */
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+
+            .dropdown-content button {
+                border: none;
+                background: none;
+                padding: 10px;
+                text-align: left;
+                color: #2980b9;
+                width: 100%;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+
+                .dropdown-content button:hover {
+                    background-color: #f0f0f0;
+                }
+
+        .container {
+            width: 80%;
+            max-width: 600px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer {
+            background-color: #A90003;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            bottom: -385px;
+            width: 100%;
+        }
+
+        .profile-info {
+            margin-bottom: 20px;
+        }
+
+            .profile-info label {
+                font-weight: bold;
+            }
+
+        .edit-mode {
+            display: none;
+        }
+
+            .edit-mode.active {
+                display: block;
+            }
+
+        .view-mode.active {
+            display: block;
+        }
+
+        .view-mode {
+            display: none;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #A90003;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+            button:hover {
+                background-color: #c70000;
+            }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>User Profile</h1>
+        <div class="settings-dropdown">
+            <button class="settings-button" onclick="toggleDropdown()">
+                <i class="fas fa-cog"></i>
+            </button>
+            <div class="dropdown-content" id="dropdownMenu">
+                <button onclick="goHome()"><i class="fas fa-home"></i> Home</button>
+                <button onclick="goToCart()"><i class="fas fa-shopping-cart"></i> Cart</button>
+                <button onclick="logout()"><i class="fas fa-sign-out-alt"></i> Log Out</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="profile-info view-mode active" id="viewMode">
+            <label>Name:</label>
+            <p id="userName">John Doe</p>
+            <label>Email:</label>
+            <p id="userEmail">johndoe@example.com</p>
+            <label>Address:</label>
+            <p id="userAddress">123 Main St, Anytown, USA</p>
+            <button onclick="toggleEdit()">Edit Profile</button>
+        </div>
+
+        <div class="profile-info edit-mode" id="editMode">
+            <label>Name:</label>
+            <input type="text" id="editUserName" value="John Doe">
+            <label>Email:</label>
+            <input type="text" id="editUserEmail" value="johndoe@example.com">
+            <label>Address:</label>
+            <input type="text" id="editUserAddress" value="123 Main St, Anytown, USA">
+            <button onclick="saveProfile()">Save Changes</button>
+            <button onclick="toggleEdit()">Cancel</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2024 Online Store. All rights reserved.</p>
+    </div>
+
+    <script>
+        function toggleEdit() {
+            const viewMode = document.getElementById('viewMode');
+            const editMode = document.getElementById('editMode');
+
+            if (viewMode.classList.contains('active')) {
+                viewMode.classList.remove('active');
+                editMode.classList.add('active');
+            } else {
+                viewMode.classList.add('active');
+                editMode.classList.remove('active');
+            }
+        }
+
+        function saveProfile() {
+            const name = document.getElementById('editUserName').value;
+            const email = document.getElementById('editUserEmail').value;
+            const address = document.getElementById('editUserAddress').value;
+
+            // Update the view mode with new values
+            document.getElementById('userName').innerText = name;
+            document.getElementById('userEmail').innerText = email;
+            document.getElementById('userAddress').innerText = address;
+
+            // Toggle back to view mode
+            toggleEdit();
+
+            // Save the data to local storage
+            localStorage.setItem('userProfile', JSON.stringify({ name, email, address }));
+        }
+
+        // Load saved profile from local storage if available
+        window.onload = function () {
+            const savedProfile = JSON.parse(localStorage.getItem('userProfile'));
+            if (savedProfile) {
+                document.getElementById('userName').innerText = savedProfile.name;
+                document.getElementById('userEmail').innerText = savedProfile.email;
+                document.getElementById('userAddress').innerText = savedProfile.address;
+                document.getElementById('editUserName').value = savedProfile.name;
+                document.getElementById('editUserEmail').value = savedProfile.email;
+                document.getElementById('editUserAddress').value = savedProfile.address;
+            }
+        };
+
+        function goHome() {
+            window.location.href = 'F4 home page.html'; // Change to your actual home page URL
+        }
+
+        function goToCart() {
+            window.location.href = 'F4 cart page.html'; // Change to your actual cart page URL
+        }
+
+        function logout() {
+            alert('You have logged out successfully!');
+            window.location.href = 'F4 login page.html'; // Change to your actual login page
+        }
+
+        // Function to toggle the dropdown menu
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdownMenu');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Close the dropdown if the user clicks outside of it
+        window.onclick = function (event) {
+            const dropdown = document.getElementById('dropdownMenu');
+            if (!event.target.matches('.settings-button')) {
+                if (dropdown.style.display === 'block') {
+                    dropdown.style.display = 'none';
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>
